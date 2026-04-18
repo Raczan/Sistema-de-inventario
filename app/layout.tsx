@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Figtree, Lora } from "next/font/google";
+import { Geist, Geist_Mono, Figtree, Lora, Instrument_Sans, Merriweather } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-const loraHeading = Lora({ subsets: ["latin"], variable: "--font-heading" });
+const merriweatherHeading = Merriweather({subsets:['latin'],variable:'--font-heading'});
 
-const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
+const instrumentSans = Instrument_Sans({subsets:['latin'],variable:'--font-sans'});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,13 +37,13 @@ export default function RootLayout({
         geistSans.variable,
         geistMono.variable,
         "font-sans",
-        figtree.variable,
-        loraHeading.variable,
+        instrumentSans.variable,
+        merriweatherHeading.variable,
       )}
     >
       <body>
         <TooltipProvider>{children}</TooltipProvider>
-      </body>{" "}
+      </body>
     </html>
   );
 }

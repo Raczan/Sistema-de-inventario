@@ -2,7 +2,7 @@ import * as React from "react"
 import { Slot } from "radix-ui"
 
 import { cn } from "@/lib/utils"
-import { CaretRightIcon, DotsThreeIcon } from "@phosphor-icons/react"
+import { RiArrowRightSLine, RiMoreLine } from "@remixicon/react"
 
 function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -83,7 +83,7 @@ function BreadcrumbSeparator({
       {...props}
     >
       {children ?? (
-        <CaretRightIcon />
+        <RiArrowRightSLine />
       )}
     </li>
   )
@@ -104,7 +104,7 @@ function BreadcrumbEllipsis({
       )}
       {...props}
     >
-      <DotsThreeIcon
+      <RiMoreLine
       />
       <span className="sr-only">More</span>
     </span>
