@@ -22,12 +22,13 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-      <div className="relative hidden bg-muted lg:block">
+      <div className="relative hidden bg-emerald-700 lg:block">
         <Image
           src="/inventory.svg"
           alt="Sistema de inventario"
-          fill
-          className="object-cover dark:brightness-[0.2] dark:grayscale"
+          width={640}
+          height={450}
+          className="absolute inset-0 m-auto"
         />
       </div>
     </div>
