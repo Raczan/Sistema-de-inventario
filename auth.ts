@@ -1,9 +1,9 @@
-import NextAuth from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
-import { authConfig } from './auth.config';
-import { z } from 'zod';
-import bcrypt from 'bcrypt';
-import { fetchUsuarioByEmail } from '@/lib/data/usuarios';
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { authConfig } from "./auth.config";
+import { z } from "zod";
+import bcrypt from "bcrypt";
+import { fetchUsuarioByEmail } from "@/lib/data/usuarios";
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
@@ -19,7 +19,12 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           const user = await fetchUsuarioByEmail(email);
           if (!user) return null;
           const passwordsMatch = await bcrypt.compare(password, user.password);
-          if (passwordsMatch) return { ...user, id: String(user.id) };
+          if (passwordsMatch)
+            return {
+              id: String(user.id),
+              name: user.nombre,
+              email: user.email,
+            };
         }
 
         return null;

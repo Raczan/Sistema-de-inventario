@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,6 +23,7 @@ export function LoginForm({
   ...props
 }: Omit<React.ComponentProps<"form">, "onSubmit" | "action">) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const {
     register,
@@ -38,6 +40,7 @@ export function LoginForm({
       formData.append("password", data.password);
       const error = await authenticate(formData);
       if (error) toast.error(error);
+      else router.push('/');
     });
   }
 
