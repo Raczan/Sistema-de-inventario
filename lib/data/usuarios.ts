@@ -10,3 +10,10 @@ export async function fetchUsuarioByEmail(email: string) {
     throw new Error('Failed to fetch usuario.');
   }
 }
+
+export async function createUsuario(nombre: string, email: string, hashedPassword: string) {
+  await sql`
+    INSERT INTO usuarios (nombre, email, password)
+    VALUES (${nombre}, ${email}, ${hashedPassword})
+  `;
+}

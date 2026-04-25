@@ -1,11 +1,12 @@
 "use client";
 
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, type LoginFormValues } from "@/lib/schemas/login";
-import { authenticate } from "@/lib/actions/auth";
+import { registerSchema, type RegisterFormValues } from "@/lib/schemas/register";
+import { register } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,27 +18,30 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 
-export function LoginForm({
+export function RegisterForm({
   className,
   ...props
 }: Omit<React.ComponentProps<"form">, "onSubmit" | "action">) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const {
-    register,
+    register: registerField,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
   });
 
-  function onSubmit(data: LoginFormValues) {
+  function onSubmit(data: RegisterFormValues) {
     startTransition(async () => {
-      const formData = new FormData();
-      formData.append("email", data.email);
-      formData.append("password", data.password);
-      const error = await authenticate(formData);
-      if (error) toast.error(error);
+      const error = await register(data.nombre, data.email, data.password);
+      if (error) {
+        toast.error(error);
+      } else {
+        toast.success("Cuenta creada exitosamente");
+        router.push("/login");
+      }
     });
   }
 
@@ -50,11 +54,22 @@ export function LoginForm({
     >
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Iniciar sesión</h1>
+          <h1 className="text-2xl font-bold">Crear cuenta</h1>
           <p className="text-sm text-balance text-muted-foreground">
-            Ingresa tu correo electrónico para acceder a tu cuenta
+            Ingresa tus datos para registrarte
           </p>
         </div>
+        <Field data-invalid={!!errors.nombre}>
+          <FieldLabel htmlFor="nombre">Nombre</FieldLabel>
+          <Input
+            id="nombre"
+            type="text"
+            placeholder="Tu nombre"
+            className="bg-background"
+            {...registerField("nombre")}
+          />
+          <FieldError errors={[errors.nombre]} />
+        </Field>
         <Field data-invalid={!!errors.email}>
           <FieldLabel htmlFor="email">Correo electrónico</FieldLabel>
           <Input
@@ -62,7 +77,7 @@ export function LoginForm({
             type="email"
             placeholder="m@ejemplo.com"
             className="bg-background"
-            {...register("email")}
+            {...registerField("email")}
           />
           <FieldError errors={[errors.email]} />
         </Field>
@@ -72,23 +87,30 @@ export function LoginForm({
             id="password"
             type="password"
             className="bg-background"
-            {...register("password")}
+            {...registerField("password")}
           />
           <FieldError errors={[errors.password]} />
+        </Field>
+        <Field data-invalid={!!errors.confirmPassword}>
+          <FieldLabel htmlFor="confirmPassword">Confirmar contraseña</FieldLabel>
+          <Input
+            id="confirmPassword"
+            type="password"
+            className="bg-background"
+            {...registerField("confirmPassword")}
+          />
+          <FieldError errors={[errors.confirmPassword]} />
         </Field>
         <Field>
           <Button type="submit" disabled={isPending}>
             {isPending && <Spinner />}
-            Iniciar sesión
+            Crear cuenta
           </Button>
         </Field>
         <p className="text-center text-sm text-muted-foreground">
-          ¿No tienes cuenta?&nbsp;
-          <a
-            href="/register"
-            className="underline underline-offset-4 hover:text-primary"
-          >
-            Registrarse
+          ¿Ya tienes cuenta?{" "}
+          <a href="/login" className="underline underline-offset-4 hover:text-primary">
+            Iniciar sesión
           </a>
         </p>
       </FieldGroup>
