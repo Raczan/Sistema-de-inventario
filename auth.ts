@@ -7,6 +7,7 @@ import { fetchUsuarioByEmail } from "@/lib/data/usuarios";
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
+  secret: process.env.BETTER_AUTH_SECRET,
   providers: [
     Credentials({
       async authorize(credentials) {
