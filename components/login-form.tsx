@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginFormValues } from "@/lib/schemas/login";
-import { authenticate } from "@/lib/actions";
+import { authenticate } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +15,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 
 export function LoginForm({
   className,
@@ -77,6 +78,7 @@ export function LoginForm({
         </Field>
         <Field>
           <Button type="submit" disabled={isPending}>
+            {isPending && <Spinner />}
             Iniciar sesión
           </Button>
         </Field>

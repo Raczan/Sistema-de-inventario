@@ -1,5 +1,5 @@
-import sql from './db';
-import { Usuario } from './definitions';
+import sql from '@/lib/db';
+import { Usuario } from '@/lib/types';
 
 export async function fetchUsuarioByEmail(email: string) {
   try {

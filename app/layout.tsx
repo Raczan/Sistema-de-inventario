@@ -33,6 +33,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Sistema de inventario",
   description: "Sistema de inventario UMG",
+  icons: { icon: "/favicon.png" },
 };
 
 export default function RootLayout({
