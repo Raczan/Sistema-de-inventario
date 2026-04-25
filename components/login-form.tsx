@@ -1,8 +1,11 @@
 "use client";
 
+import { useTransition } from "react";
+import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { loginSchema, type LoginFormValues } from "@/lib/schemas/login";
+import { authenticate } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,30 +16,28 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-const loginSchema = z.object({
-  email: z.email("Ingresa un correo electrónico válido"),
-  password: z
-    .string()
-    .min(1, "La contraseña es requerida")
-    .min(6, "La contraseña debe tener al menos 6 caracteres"),
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
-
 export function LoginForm({
   className,
   ...props
-}: Omit<React.ComponentProps<"form">, "onSubmit">) {
+}: Omit<React.ComponentProps<"form">, "onSubmit" | "action">) {
+  const [isPending, startTransition] = useTransition();
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
   });
 
   function onSubmit(data: LoginFormValues) {
-    console.log(data);
+    startTransition(async () => {
+      const formData = new FormData();
+      formData.append("email", data.email);
+      formData.append("password", data.password);
+      const error = await authenticate(formData);
+      if (error) toast.error(error);
+    });
   }
 
   return (
@@ -75,7 +76,7 @@ export function LoginForm({
           <FieldError errors={[errors.password]} />
         </Field>
         <Field>
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="submit" disabled={isPending}>
             Iniciar sesión
           </Button>
         </Field>

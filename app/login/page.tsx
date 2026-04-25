@@ -28,7 +28,8 @@ export default function LoginPage() {
           alt="Sistema de inventario"
           width={640}
           height={450}
-          className="absolute inset-0 m-auto"
+          className="absolute inset-0 m-auto size-auto"
+          priority
         />
       </div>
     </div>
