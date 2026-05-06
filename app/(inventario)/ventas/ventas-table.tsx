@@ -148,11 +148,18 @@ export function VentasTable() {
     {
       accessorKey: "fecha_venta",
       header: "Fecha",
-      cell: ({ row }) =>
-        new Date(row.original.fecha_venta + "T00:00:00").toLocaleDateString(
-          "es-GT",
-          { day: "2-digit", month: "short", year: "numeric" },
-        ),
+      cell: ({ row }) => {
+        // slice(0,10) garantiza "YYYY-MM-DD" sin importar si postgres
+        // devuelve timestamp completo. Mediodía evita desfases de timezone.
+        const fecha = new Date(
+          row.original.fecha_venta.slice(0, 10) + "T12:00:00",
+        );
+        return fecha.toLocaleDateString("es-GT", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        });
+      },
     },
     {
       accessorKey: "num_productos",
@@ -239,7 +246,9 @@ export function VentasTable() {
             <DialogHeader>
               <DialogTitle>Nueva venta</DialogTitle>
             </DialogHeader>
-            <VentaForm key={String(addOpen)} onSubmit={handleAdd} />
+            <div className="overflow-y-auto max-h-[calc(90vh-8rem)]">
+              <VentaForm key={String(addOpen)} onSubmit={handleAdd} />
+            </div>
           </DialogContent>
         </Dialog>
       </div>
@@ -292,14 +301,16 @@ export function VentasTable() {
           <DialogHeader>
             <DialogTitle>Editar venta #{selected?.id_venta}</DialogTitle>
           </DialogHeader>
-          {editDefaults && (
-            <VentaForm
-              key={selected?.id_venta}
-              defaultValues={editDefaults}
-              onSubmit={handleEdit}
-              submitLabel="Guardar cambios"
-            />
-          )}
+          <div className="overflow-y-auto max-h-[calc(90vh-8rem)]">
+            {editDefaults && (
+              <VentaForm
+                key={selected?.id_venta}
+                defaultValues={editDefaults}
+                onSubmit={handleEdit}
+                submitLabel="Guardar cambios"
+              />
+            )}
+          </div>
         </DialogContent>
       </Dialog>
 

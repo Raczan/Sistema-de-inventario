@@ -45,8 +45,12 @@ export function VentaForm({
   const [isPending, startTransition] = useTransition();
   const [lotes, setLotes] = useState<LoteOption[]>([]);
 
-const { register, control, handleSubmit, formState: { errors } } =
-  useForm({
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(ventaSchema),
     defaultValues: {
       fecha_venta: new Date().toISOString().split("T")[0],
@@ -54,7 +58,7 @@ const { register, control, handleSubmit, formState: { errors } } =
       detalles: [{ id_lote: 0, cantidad_vendida: 1, precio_unitario: 0 }],
       ...defaultValues,
     },
-});
+  });
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -118,7 +122,7 @@ const { register, control, handleSubmit, formState: { errors } } =
       <Separator />
 
       {/* ── Líneas de detalle ── */}
-      <div className="space-y-3">
+      <div className="space-y-2">
         <div className="flex items-center justify-between">
           <p className="text-sm font-medium">Detalle de productos</p>
           <Button
@@ -139,26 +143,25 @@ const { register, control, handleSubmit, formState: { errors } } =
           <p className="text-destructive text-xs">{errors.detalles.message}</p>
         )}
 
-        {/* Encabezados de columna */}
-        <div className="grid grid-cols-[1fr_80px_110px_36px] gap-2 px-1">
-          <span className="text-muted-foreground text-xs font-medium">Lote</span>
-          <span className="text-muted-foreground text-xs font-medium">Cant.</span>
-          <span className="text-muted-foreground text-xs font-medium">
+        {/* Encabezados — flex con anchos fijos iguales a las columnas */}
+        <div className="flex gap-2 px-1">
+          <span className="flex-1 text-muted-foreground text-xs font-medium min-w-0">
+            Lote
+          </span>
+          <span className="w-20 shrink-0 text-muted-foreground text-xs font-medium">
+            Cant.
+          </span>
+          <span className="w-24 shrink-0 text-muted-foreground text-xs font-medium">
             Precio unit.
           </span>
-          <span />
+          <span className="w-9 shrink-0" />
         </div>
 
+        {/* Filas de detalle: flex con anchos fijos, sin Field wrapper */}
         {fields.map((field, index) => (
-          <div
-            key={field.id}
-            className="grid grid-cols-[1fr_80px_110px_36px] gap-2 items-start"
-          >
-            {/* Select de lote */}
-            <Field
-              data-invalid={!!errors.detalles?.[index]?.id_lote}
-              className="m-0"
-            >
+          <div key={field.id} className="flex gap-2 items-start">
+            {/* Lote */}
+            <div className="flex-1 min-w-0">
               <Controller
                 control={control}
                 name={`detalles.${index}.id_lote`}
@@ -167,7 +170,10 @@ const { register, control, handleSubmit, formState: { errors } } =
                     value={f.value ? String(f.value) : ""}
                     onValueChange={(val) => f.onChange(Number(val))}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger
+                      data-invalid={!!errors.detalles?.[index]?.id_lote}
+                      className="w-full"
+                    >
                       <SelectValue placeholder="Seleccionar lote…" />
                     </SelectTrigger>
                     <SelectContent>
@@ -180,53 +186,58 @@ const { register, control, handleSubmit, formState: { errors } } =
                   </Select>
                 )}
               />
-              <FieldError errors={[errors.detalles?.[index]?.id_lote]} />
-            </Field>
+              {errors.detalles?.[index]?.id_lote && (
+                <p className="text-destructive text-xs mt-0.5">
+                  {errors.detalles[index].id_lote?.message}
+                </p>
+              )}
+            </div>
 
             {/* Cantidad */}
-            <Field
-              data-invalid={!!errors.detalles?.[index]?.cantidad_vendida}
-              className="m-0"
-            >
+            <div className="w-20 shrink-0">
               <Input
                 type="number"
                 min={1}
                 placeholder="1"
+                data-invalid={!!errors.detalles?.[index]?.cantidad_vendida}
                 {...register(`detalles.${index}.cantidad_vendida`)}
               />
-              <FieldError
-                errors={[errors.detalles?.[index]?.cantidad_vendida]}
-              />
-            </Field>
+              {errors.detalles?.[index]?.cantidad_vendida && (
+                <p className="text-destructive text-xs mt-0.5">
+                  {errors.detalles[index].cantidad_vendida?.message}
+                </p>
+              )}
+            </div>
 
             {/* Precio unitario */}
-            <Field
-              data-invalid={!!errors.detalles?.[index]?.precio_unitario}
-              className="m-0"
-            >
+            <div className="w-24 shrink-0">
               <Input
                 type="number"
                 min={0}
                 step="0.01"
                 placeholder="0.00"
+                data-invalid={!!errors.detalles?.[index]?.precio_unitario}
                 {...register(`detalles.${index}.precio_unitario`)}
               />
-              <FieldError
-                errors={[errors.detalles?.[index]?.precio_unitario]}
-              />
-            </Field>
+              {errors.detalles?.[index]?.precio_unitario && (
+                <p className="text-destructive text-xs mt-0.5">
+                  {errors.detalles[index].precio_unitario?.message}
+                </p>
+              )}
+            </div>
 
-            {/* Eliminar fila — deshabilitado si es la única */}
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              className="mt-0.5"
-              disabled={fields.length === 1}
-              onClick={() => remove(index)}
-            >
-              <TrashIcon className="text-destructive size-4" />
-            </Button>
+            {/* Eliminar — deshabilitado si es la única línea */}
+            <div className="w-9 shrink-0 pt-0.5">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                disabled={fields.length === 1}
+                onClick={() => remove(index)}
+              >
+                <TrashIcon className="text-destructive size-4" />
+              </Button>
+            </div>
           </div>
         ))}
       </div>
