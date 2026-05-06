@@ -1,23 +1,32 @@
 import sql from "@/lib/db";
 import { NextResponse } from "next/server";
 
-export async function GET() {
-  const rows = await sql`
-    SELECT
-      v.id_venta,
-      v.fecha_venta,
-      v.total,
-      v.observacion,
-      COUNT(d.id_detalle)::int AS num_productos
-    FROM ventas v
-    LEFT JOIN venta_detalle d ON d.id_venta = v.id_venta
-    GROUP BY v.id_venta
-    ORDER BY v.fecha_venta DESC, v.id_venta DESC
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+
+  const [venta] = await sql`
+    SELECT * FROM ventas WHERE id_venta = ${id}
   `;
-  return NextResponse.json(rows);
+  if (!venta) return new NextResponse(null, { status: 404 });
+
+  const detalles = await sql`
+    SELECT id_detalle, id_lote, cantidad_vendida, precio_unitario
+    FROM venta_detalle
+    WHERE id_venta = ${id}
+    ORDER BY id_detalle ASC
+  `;
+
+  return NextResponse.json({ ...venta, detalles });
 }
 
-export async function POST(request: Request) {
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
   const body = await request.json();
   const { fecha_venta, observacion, detalles } = body as {
     fecha_venta: string;
@@ -31,16 +40,23 @@ export async function POST(request: Request) {
   );
 
   const [venta] = await sql`
-    INSERT INTO ventas (fecha_venta, total, observacion)
-    VALUES (${fecha_venta}, ${total}, ${observacion || null})
+    UPDATE ventas
+    SET
+      fecha_venta  = ${fecha_venta},
+      total        = ${total},
+      observacion  = ${observacion || null}
+    WHERE id_venta = ${id}
     RETURNING *
   `;
+
+  // Reemplazar todos los detalles (CASCADE permite el DELETE)
+  await sql`DELETE FROM venta_detalle WHERE id_venta = ${id}`;
 
   for (const detalle of detalles) {
     await sql`
       INSERT INTO venta_detalle (id_venta, id_lote, cantidad_vendida, precio_unitario)
       VALUES (
-        ${venta.id_venta},
+        ${id},
         ${detalle.id_lote},
         ${detalle.cantidad_vendida},
         ${detalle.precio_unitario}
@@ -48,5 +64,15 @@ export async function POST(request: Request) {
     `;
   }
 
-  return NextResponse.json(venta, { status: 201 });
+  return NextResponse.json(venta);
+}
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  // venta_detalle se borra por ON DELETE CASCADE
+  await sql`DELETE FROM ventas WHERE id_venta = ${id}`;
+  return new NextResponse(null, { status: 204 });
 }
