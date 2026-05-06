@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,8 +8,9 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { ProveedoresTable } from "./proveedores-table";
 
-export default function MovimientosPage() {
+export default function ProveedoresPage() {
   return (
     <>
       <header className="flex h-16 shrink-0 items-center gap-2">
@@ -20,14 +23,14 @@ export default function MovimientosPage() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbPage>Movimientos</BreadcrumbPage>
+                <BreadcrumbPage>Proveedores</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </div>
       </header>
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-        <div className="min-h-screen flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+        <ProveedoresTable />
       </div>
     </>
   );

@@ -4,7 +4,9 @@ import * as React from "react";
 import {
   StackIcon,
   PackageIcon,
-  ArrowsLeftRightIcon,
+  ArchiveBoxIcon,
+  ReceiptIcon,
+  TruckIcon,
 } from "@phosphor-icons/react";
 
 import { NavMain } from "@/components/nav-main";
@@ -32,9 +34,19 @@ const navItems = [
     icon: <PackageIcon />,
   },
   {
-    title: "Movimientos",
-    url: "/movimientos",
-    icon: <ArrowsLeftRightIcon />,
+    title: "Lotes",
+    url: "/lotes",
+    icon: <ArchiveBoxIcon />,
+  },
+  {
+    title: "Ventas",
+    url: "/ventas",
+    icon: <ReceiptIcon />,
+  },
+  {
+    title: "Proveedores",
+    url: "/proveedores",
+    icon: <TruckIcon />,
   },
 ];
 
