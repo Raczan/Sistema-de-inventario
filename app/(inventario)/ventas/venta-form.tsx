@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 
-// Ajusta los campos al nombre real de tu tabla `lotes`
+
 type LoteOption = {
   id_lote: number;
   descripcion: string;
@@ -72,7 +72,7 @@ export function VentaForm({
       .catch(() => setLotes([]));
   }, []);
 
-  // Total calculado en tiempo real
+
   const detallesWatch = useWatch({ control, name: "detalles" });
   const totalCalculado = (detallesWatch ?? []).reduce((sum, d) => {
     const cant = Number(d?.cantidad_vendida) || 0;
@@ -88,7 +88,7 @@ export function VentaForm({
 
   return (
     <form onSubmit={handleSubmit(submit)} noValidate className="space-y-4">
-      {/* ── Cabecera ── */}
+      {}
       <FieldGroup>
         <div className="grid grid-cols-2 gap-4">
           <Field data-invalid={!!errors.fecha_venta}>
@@ -121,7 +121,7 @@ export function VentaForm({
 
       <Separator />
 
-      {/* ── Líneas de detalle ── */}
+      {}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <p className="text-sm font-medium">Detalle de productos</p>
@@ -138,12 +138,12 @@ export function VentaForm({
           </Button>
         </div>
 
-        {/* Error a nivel del array */}
+        {}
         {typeof errors.detalles?.message === "string" && (
           <p className="text-destructive text-xs">{errors.detalles.message}</p>
         )}
 
-        {/* Encabezados — flex con anchos fijos iguales a las columnas */}
+        {}
         <div className="flex gap-2 px-1">
           <span className="flex-1 text-muted-foreground text-xs font-medium min-w-0">
             Lote
@@ -157,10 +157,10 @@ export function VentaForm({
           <span className="w-9 shrink-0" />
         </div>
 
-        {/* Filas de detalle: flex con anchos fijos, sin Field wrapper */}
+        {}
         {fields.map((field, index) => (
           <div key={field.id} className="flex gap-2 items-start">
-            {/* Lote */}
+            {}
             <div className="flex-1 min-w-0">
               <Controller
                 control={control}
@@ -193,7 +193,7 @@ export function VentaForm({
               )}
             </div>
 
-            {/* Cantidad */}
+            {}
             <div className="w-20 shrink-0">
               <Input
                 type="number"
@@ -209,7 +209,7 @@ export function VentaForm({
               )}
             </div>
 
-            {/* Precio unitario */}
+            {}
             <div className="w-24 shrink-0">
               <Input
                 type="number"
@@ -226,7 +226,7 @@ export function VentaForm({
               )}
             </div>
 
-            {/* Eliminar — deshabilitado si es la única línea */}
+            {}
             <div className="w-9 shrink-0 pt-0.5">
               <Button
                 type="button"

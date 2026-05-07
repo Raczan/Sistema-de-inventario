@@ -41,16 +41,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-// Tipo local que refleja lo que devuelve GET /api/ventas
 type Venta = {
   id_venta: number;
-  fecha_venta: string;          // "YYYY-MM-DD"
-  total: string;                // numeric llega como string desde postgres
+  fecha_venta: string;          
+  total: string;                
   observacion: string | null;
   num_productos: number;
 };
 
-// Tipo extendido que devuelve GET /api/ventas/:id (para editar)
 type VentaConDetalles = Venta & {
   detalles: {
     id_detalle: number;
@@ -72,7 +70,7 @@ export function VentasTable() {
     Partial<VentaFormValues> | undefined
   >(undefined);
 
-  // ── Fetch ──────────────────────────────────────────────────────────────
+
   async function fetchVentas() {
     const res = await fetch("/api/ventas");
     const json = await res.json();
@@ -83,7 +81,7 @@ export function VentasTable() {
     fetchVentas();
   }, []);
 
-  // ── CRUD handlers ──────────────────────────────────────────────────────
+
   async function handleAdd(data: VentaFormValues) {
     await fetch("/api/ventas", {
       method: "POST",
@@ -114,7 +112,6 @@ export function VentasTable() {
 
   async function openEdit(venta: Venta) {
     setSelected(venta);
-    // Cargamos los detalles para poblar el formulario
     const res = await fetch(`/api/ventas/${venta.id_venta}`);
     const full: VentaConDetalles = await res.json();
     setEditDefaults({
@@ -134,7 +131,6 @@ export function VentasTable() {
     setDeleteOpen(true);
   }
 
-  // ── Columnas TanStack Table ────────────────────────────────────────────
   const columns: ColumnDef<Venta>[] = [
     {
       accessorKey: "id_venta",
@@ -149,8 +145,6 @@ export function VentasTable() {
       accessorKey: "fecha_venta",
       header: "Fecha",
       cell: ({ row }) => {
-        // slice(0,10) garantiza "YYYY-MM-DD" sin importar si postgres
-        // devuelve timestamp completo. Mediodía evita desfases de timezone.
         const fecha = new Date(
           row.original.fecha_venta.slice(0, 10) + "T12:00:00",
         );
@@ -222,10 +216,9 @@ export function VentasTable() {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  // ── Render ─────────────────────────────────────────────────────────────
   return (
     <div className="space-y-4">
-      {/* Toolbar */}
+      {}
       <div className="flex items-center justify-between gap-4">
         <div className="relative max-w-sm flex-1">
           <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
@@ -237,7 +230,7 @@ export function VentasTable() {
           />
         </div>
 
-        {/* Dialog: Nueva venta */}
+        {}
         <Dialog open={addOpen} onOpenChange={setAddOpen}>
           <DialogTrigger asChild>
             <Button>Nueva venta</Button>
@@ -253,7 +246,7 @@ export function VentasTable() {
         </Dialog>
       </div>
 
-      {/* Tabla */}
+      {}
       <div className="rounded-xl border">
         <Table>
           <TableHeader>
@@ -295,7 +288,7 @@ export function VentasTable() {
         </Table>
       </div>
 
-      {/* Dialog: Editar venta */}
+      {}
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
@@ -314,7 +307,7 @@ export function VentasTable() {
         </DialogContent>
       </Dialog>
 
-      {/* AlertDialog: Eliminar venta */}
+      {}
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent size="sm">
           <AlertDialogHeader>
