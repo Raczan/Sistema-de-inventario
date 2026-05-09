@@ -1,11 +1,9 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
+"use client";
+
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { LotesTable } from "./lotes-table";
 
 export default function LotesPage() {
   return (
@@ -13,10 +11,7 @@ export default function LotesPage() {
       <header className="flex h-16 shrink-0 items-center gap-2">
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ml-1" />
-          <Separator
-            orientation="vertical"
-            className="mr-2 data-vertical:h-4 data-vertical:self-auto"
-          />
+          <Separator orientation="vertical" className="mr-2 data-vertical:h-4 data-vertical:self-auto" />
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -27,7 +22,7 @@ export default function LotesPage() {
         </div>
       </header>
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-        <div className="min-h-screen flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+        <LotesTable />
       </div>
     </>
   );
