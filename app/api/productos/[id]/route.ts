@@ -1,35 +1,17 @@
 import sql from "@/lib/db";
 import { NextResponse } from "next/server";
 
-export async function GET() {
-  const rows = await sql`
-    SELECT
-      p.id_producto,
-      p.sku,
-      p.nombre,
-      p.precio_venta,
-      p.disponible,
-      p.creado_en,
-      d.descripcion,
-      d.ingredientes,
-      d.tipo_producto,
-      d.presentacion,
-      d.unidades_por_empaque,
-      d.precio_compra
-    FROM productos p
-    LEFT JOIN detalle_producto d ON d.id_producto = p.id_producto
-    ORDER BY p.nombre ASC
-  `;
-  return NextResponse.json(rows);
-}
-
-export async function POST(request: Request) {
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
   const body = await request.json();
   const {
     sku,
     nombre,
     precio_venta,
-    disponible = true,
+    disponible,
     descripcion,
     ingredientes,
     tipo_producto,
@@ -38,35 +20,39 @@ export async function POST(request: Request) {
     precio_compra,
   } = body;
 
-  // Insert en productos y obtener el id generado
   const [producto] = await sql`
-    INSERT INTO productos (sku, nombre, precio_venta, disponible)
-    VALUES (${sku}, ${nombre}, ${precio_venta}, ${disponible})
+    UPDATE productos
+    SET
+      sku          = ${sku},
+      nombre       = ${nombre},
+      precio_venta = ${precio_venta},
+      disponible   = ${disponible}
+    WHERE id_producto = ${id}
     RETURNING *
   `;
 
-  // Insert en detalle_producto usando el mismo id
   const [detalle] = await sql`
-    INSERT INTO detalle_producto (
-      id_producto,
-      descripcion,
-      ingredientes,
-      tipo_producto,
-      presentacion,
-      unidades_por_empaque,
-      precio_compra
-    )
-    VALUES (
-      ${producto.id_producto},
-      ${descripcion ?? null},
-      ${ingredientes},
-      ${tipo_producto},
-      ${presentacion},
-      ${unidades_por_empaque},
-      ${precio_compra}
-    )
+    UPDATE detalle_producto
+    SET
+      descripcion          = ${descripcion ?? null},
+      ingredientes         = ${ingredientes},
+      tipo_producto        = ${tipo_producto},
+      presentacion         = ${presentacion},
+      unidades_por_empaque = ${unidades_por_empaque},
+      precio_compra        = ${precio_compra}
+    WHERE id_producto = ${id}
     RETURNING *
   `;
 
-  return NextResponse.json({ ...producto, ...detalle }, { status: 201 });
+  return NextResponse.json({ ...producto, ...detalle });
+}
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  // CASCADE en detalle_producto elimina el detalle automáticamente
+  await sql`DELETE FROM productos WHERE id_producto = ${id}`;
+  return new NextResponse(null, { status: 204 });
 }
