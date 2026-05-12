@@ -7,7 +7,7 @@ export async function GET() {
       l.id_lote,
       l.codigo_lote,
       l.id_producto,
-      p.nombre_producto,
+      p.nombre,
       l.cantidad_inicial,
       l.cantidad_actual,
       l.fecha_entrada,
