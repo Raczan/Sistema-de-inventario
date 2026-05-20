@@ -43,7 +43,7 @@ type Lote = {
   id_lote: number;
   codigo_lote: string;
   id_producto: number;
-  nombre_producto: string;
+  nombre: string;
   cantidad_inicial: number;
   cantidad_actual: number;
   fecha_entrada: string;
@@ -57,6 +57,7 @@ export function LotesTable() {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selected, setSelected] = useState<Lote | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   // Fetch lotes
   async function fetchLotes() {
@@ -68,6 +69,13 @@ export function LotesTable() {
   useEffect(() => {
     fetchLotes();
   }, []);
+
+  // Limpiar error cuando cierra el diálogo
+  useEffect(() => {
+    if (!deleteOpen) {
+      setDeleteError(null);
+    }
+  }, [deleteOpen]);
 
   // Handlers
   async function handleAdd(formData: LoteFormValues) {
@@ -93,7 +101,16 @@ export function LotesTable() {
 
   async function handleDelete() {
     if (!selected) return;
-    await fetch(`/api/lotes/${selected.id_lote}`, { method: "DELETE" });
+    setDeleteError(null);
+
+    const res = await fetch(`/api/lotes/${selected.id_lote}`, { method: "DELETE" });
+
+    if (!res.ok) {
+      const data = await res.json();
+      setDeleteError(data.error || "Error al eliminar el lote");
+      return;
+    }
+
     setDeleteOpen(false);
     fetchLotes();
   }
@@ -111,7 +128,7 @@ export function LotesTable() {
   // Columns
   const columns: ColumnDef<Lote>[] = [
     { accessorKey: "codigo_lote", header: "Código del Lote" },
-    { accessorKey: "nombre_producto", header: "Producto" },
+    { accessorKey: "nombre", header: "Producto" },
     { accessorKey: "cantidad_inicial", header: "Cantidad Inicial" },
     { accessorKey: "cantidad_actual", header: "Cantidad Actual" },
     {
@@ -261,17 +278,26 @@ export function LotesTable() {
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent size="sm">
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar lote?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {deleteError ? "No se puede eliminar" : "¿Eliminar lote?"}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Esta acción no se puede deshacer. Se eliminará el lote{" "}
-              <strong>{selected?.codigo_lote}</strong>.
+              {deleteError
+                ? deleteError
+                : `Esta acción no se puede deshacer. Se eliminará el lote ${selected?.codigo_lote}.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction variant="destructive" onClick={handleDelete}>
-              Eliminar
-            </AlertDialogAction>
+            {deleteError ? (
+              <AlertDialogCancel>Entendido</AlertDialogCancel>
+            ) : (
+              <>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction variant="destructive" onClick={handleDelete}>
+                  Eliminar
+                </AlertDialogAction>
+              </>
+            )}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

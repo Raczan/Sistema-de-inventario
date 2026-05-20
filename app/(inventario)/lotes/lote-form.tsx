@@ -18,7 +18,7 @@ import {
 
 type Producto = {
   id_producto: number;
-  nombre_producto: string;
+  nombre: string;
 };
 
 type Props = {
@@ -101,7 +101,7 @@ export function LoteForm({ defaultValues, onSubmit, submitLabel = "Guardar" }: P
             <SelectContent>
               {productos.map((p) => (
                 <SelectItem key={p.id_producto} value={p.id_producto.toString()}>
-                  {p.nombre_producto}
+                  {p.nombre}
                 </SelectItem>
               ))}
             </SelectContent>
