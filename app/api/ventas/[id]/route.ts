@@ -49,7 +49,6 @@ export async function PUT(
     RETURNING *
   `;
 
-  // Reemplazar todos los detalles (CASCADE permite el DELETE)
   await sql`DELETE FROM venta_detalle WHERE id_venta = ${id}`;
 
   for (const detalle of detalles) {
@@ -72,7 +71,6 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  // venta_detalle se borra por ON DELETE CASCADE
   await sql`DELETE FROM ventas WHERE id_venta = ${id}`;
   return new NextResponse(null, { status: 204 });
 }
