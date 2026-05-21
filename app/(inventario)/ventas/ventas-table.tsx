@@ -115,7 +115,7 @@ export function VentasTable() {
     const res = await fetch(`/api/ventas/${venta.id_venta}`);
     const full: VentaConDetalles = await res.json();
     setEditDefaults({
-      fecha_venta: full.fecha_venta,
+      fecha_venta: full.fecha_venta.slice(0, 10),
       observacion: full.observacion ?? "",
       detalles: full.detalles.map((d) => ({
         id_lote: d.id_lote,
@@ -157,10 +157,10 @@ export function VentasTable() {
     },
     {
       accessorKey: "num_productos",
-      header: "Productos",
+      header: "Cantidad",
       cell: ({ row }) => (
         <span className="text-muted-foreground">
-          {row.original.num_productos} línea
+          {row.original.num_productos} producto
           {row.original.num_productos !== 1 ? "s" : ""}
         </span>
       ),
