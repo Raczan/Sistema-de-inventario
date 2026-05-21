@@ -263,8 +263,8 @@ export function LotesTable() {
                     id_producto: selected.id_producto,
                     cantidad_inicial: selected.cantidad_inicial,
                     cantidad_actual: selected.cantidad_actual,
-                    fecha_entrada: selected.fecha_entrada,
-                    fecha_vencimiento: selected.fecha_vencimiento,
+                    fecha_entrada: new Date(selected.fecha_entrada).toISOString().split("T")[0],
+                    fecha_vencimiento: new Date(selected.fecha_vencimiento).toISOString().split("T")[0],
                   }
                 : undefined
             }
