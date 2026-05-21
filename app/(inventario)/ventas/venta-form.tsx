@@ -28,7 +28,8 @@ import { Separator } from "@/components/ui/separator";
 
 type LoteOption = {
   id_lote: number;
-  descripcion: string;
+  nombre: string;
+  precio_venta: number;
 };
 
 type Props = {
@@ -49,6 +50,7 @@ export function VentaForm({
     register,
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(ventaSchema),
@@ -93,7 +95,7 @@ export function VentaForm({
         <div className="grid grid-cols-2 gap-4">
           <Field data-invalid={!!errors.fecha_venta}>
             <FieldLabel htmlFor="fecha_venta">Fecha</FieldLabel>
-            <Input id="fecha_venta" type="date" {...register("fecha_venta")} />
+            <Input id="fecha_venta" type="date" readOnly {...register("fecha_venta")} />
             <FieldError errors={[errors.fecha_venta]} />
           </Field>
 
@@ -134,7 +136,7 @@ export function VentaForm({
             }
           >
             <PlusIcon className="size-4" />
-            Agregar línea
+            Agregar Producto
           </Button>
         </div>
 
@@ -152,7 +154,7 @@ export function VentaForm({
             Cant.
           </span>
           <span className="w-24 shrink-0 text-muted-foreground text-xs font-medium">
-            Precio unit.
+            Precio Venta
           </span>
           <span className="w-9 shrink-0" />
         </div>
@@ -168,7 +170,13 @@ export function VentaForm({
                 render={({ field: f }) => (
                   <Select
                     value={f.value ? String(f.value) : ""}
-                    onValueChange={(val) => f.onChange(Number(val))}
+                      onValueChange={(val) => {
+                        f.onChange(Number(val));
+                        const lote = lotes.find((l) => l.id_lote === Number(val));
+                        if (lote) {
+                          setValue(`detalles.${index}.precio_unitario`, lote.precio_venta);
+                        }
+                      }}
                   >
                     <SelectTrigger
                       data-invalid={!!errors.detalles?.[index]?.id_lote}
@@ -179,7 +187,7 @@ export function VentaForm({
                     <SelectContent>
                       {lotes.map((l) => (
                         <SelectItem key={l.id_lote} value={String(l.id_lote)}>
-                          #{l.id_lote} — {l.descripcion}
+                          #{l.id_lote} — {l.nombre}
                         </SelectItem>
                       ))}
                     </SelectContent>
