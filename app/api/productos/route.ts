@@ -10,6 +10,7 @@ export async function GET() {
       p.precio_venta,
       p.disponible,
       p.creado_en,
+      p.id_proveedores,
       d.descripcion,
       d.ingredientes,
       d.tipo_producto,
@@ -18,7 +19,7 @@ export async function GET() {
       d.precio_compra
     FROM productos p
     LEFT JOIN detalle_producto d ON d.id_producto = p.id_producto
-    ORDER BY p.nombre ASC
+    ORDER BY v.fechaEdicion DESC
   `;
   return NextResponse.json(rows);
 }
