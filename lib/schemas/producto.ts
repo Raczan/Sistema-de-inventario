@@ -14,7 +14,9 @@ export const productoSchema = z.object({
     .min(0, "El precio de venta no puede ser negativo"),
   disponible: z.boolean().default(true),
 
-  // detalle_producto
+  //Seleccionar Proveedor
+  id_proveedor: z.coerce.number().min(1, "Selecciona un proveedor"),
+  
   descripcion: z.string().optional(),
   ingredientes: z.string().min(1, "Los ingredientes son obligatorios"),
   tipo_producto: z

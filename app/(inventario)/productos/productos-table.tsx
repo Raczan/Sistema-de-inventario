@@ -52,6 +52,7 @@ type Producto = {
   id_producto: number;
   sku: string;
   nombre: string;
+  nombre_proveedor: string | null;
   precio_venta: number;
   disponible: boolean;
   creado_en: string;
@@ -165,6 +166,12 @@ export function ProductosTable() {
       cell: ({ getValue }) => (
         <span className="text-center block">{getValue<number>()}</span>
       ),
+    },
+    //Campo de proveedor agregado a la tabla
+    {
+      accessorKey: "nombre_proveedor",
+      header: "Proveedor",
+      cell: ({getValue}) => getValue<string>() ?? "-",
     },
     {
       accessorKey: "disponible",

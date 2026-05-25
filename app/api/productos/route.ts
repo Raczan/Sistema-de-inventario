@@ -10,16 +10,19 @@ export async function GET() {
       p.precio_venta,
       p.disponible,
       p.creado_en,
-      p.id_proveedores,
       d.descripcion,
       d.ingredientes,
       d.tipo_producto,
       d.presentacion,
       d.unidades_por_empaque,
-      d.precio_compra
+      d.precio_compra,
+      
+      p.id_proveedor,
+      proveedores.nombre_proveedor
     FROM productos p
     LEFT JOIN detalle_producto d ON d.id_producto = p.id_producto
-    ORDER BY v.fechaEdicion DESC
+    LEFT JOIN proveedores ON proveedores.id_proveedor = p.id_proveedor
+    ORDER BY p.fechaEdicion DESC
   `;
   return NextResponse.json(rows);
 }
@@ -37,16 +40,15 @@ export async function POST(request: Request) {
     presentacion,
     unidades_por_empaque,
     precio_compra,
+    id_proveedor
   } = body;
 
-  // Insert en productos y obtener el id generado
   const [producto] = await sql`
-    INSERT INTO productos (sku, nombre, precio_venta, disponible)
-    VALUES (${sku}, ${nombre}, ${precio_venta}, ${disponible})
+    INSERT INTO productos (sku, nombre, precio_venta, disponible, id_proveedor)
+      VALUES (${sku}, ${nombre}, ${precio_venta}, ${disponible}, ${id_proveedor})
     RETURNING *
   `;
 
-  // Insert en detalle_producto usando el mismo id
   const [detalle] = await sql`
     INSERT INTO detalle_producto (
       id_producto,

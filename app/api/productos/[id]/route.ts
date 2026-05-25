@@ -20,31 +20,28 @@ export async function PUT(
     precio_compra,
   } = body;
 
+  // Actualizar producto
   const [producto] = await sql`
-    UPDATE productos
-    SET
-      sku          = ${sku},
-      nombre       = ${nombre},
-      precio_venta = ${precio_venta},
-      disponible   = ${disponible}
-    WHERE id_producto = ${id}
-    RETURNING *
-  `;
+  UPDATE productos
+  SET sku = ${sku}, nombre = ${nombre}, precio_venta = ${precio_venta}, disponible = ${disponible}
+  WHERE id_producto = ${id}
+  RETURNING *
+`;
 
-  const [detalle] = await sql`
-    UPDATE detalle_producto
-    SET
-      descripcion          = ${descripcion ?? null},
-      ingredientes         = ${ingredientes},
-      tipo_producto        = ${tipo_producto},
-      presentacion         = ${presentacion},
-      unidades_por_empaque = ${unidades_por_empaque},
-      precio_compra        = ${precio_compra}
-    WHERE id_producto = ${id}
-    RETURNING *
-  `;
+// Actualizar detalle_producto
+await sql`
+  UPDATE detalle_producto
+  SET
+    descripcion          = ${descripcion ?? null},
+    ingredientes         = ${ingredientes},
+    tipo_producto        = ${tipo_producto},
+    presentacion         = ${presentacion},
+    unidades_por_empaque = ${unidades_por_empaque},
+    precio_compra        = ${precio_compra}
+  WHERE id_producto = ${id}
+`;
 
-  return NextResponse.json({ ...producto, ...detalle });
+  return NextResponse.json(producto);
 }
 
 export async function DELETE(
@@ -52,7 +49,6 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  // CASCADE en detalle_producto elimina el detalle automáticamente
   await sql`DELETE FROM productos WHERE id_producto = ${id}`;
   return new NextResponse(null, { status: 204 });
 }

@@ -18,7 +18,7 @@ export async function GET() {
     JOIN
       public.productos p ON l.id_producto = p.id_producto
     ORDER BY
-      l.fecha_entrada ASC
+      ORDER BY l.fechaEdicion DESC
   `;
   return NextResponse.json(rows);
 }

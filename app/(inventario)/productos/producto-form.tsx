@@ -1,7 +1,8 @@
 "use client";
 
-import { useTransition } from "react";
-import { useForm, type Resolver } from "react-hook-form";
+//Se agrega el campo de proveedor al formulario de producto, con un select que carga los proveedores desde la API
+import { useTransition, useState, useEffect } from "react";
+import { useForm, type Resolver, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { productoSchema, type ProductoFormValues } from "@/lib/schemas/producto";
 import {
@@ -15,6 +16,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Props = {
   defaultValues?: Partial<ProductoFormValues>;
@@ -29,15 +37,20 @@ export function ProductoForm({
 }: Props) {
   const [isPending, startTransition] = useTransition();
 
+  // Cargar proveedores para el select
+  const [proveedores, setProveedores] = useState<{ 
+    id_proveedor: number; 
+    nombre_proveedor: string }[]>([]);
+  useEffect(() => {
+    fetch("/api/proveedores")
+      .then((r) => r.json())
+      .then(setProveedores)
+      .catch(() => setProveedores([]));
+  }, []);
+
   const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
+    register, handleSubmit, watch, setValue, control, formState: { errors } 
   } = useForm<ProductoFormValues>({
-    // Cast explícito necesario cuando el schema usa z.coerce — evita el error de
-    // inferencia de tipos entre zodResolver y react-hook-form.
     resolver: zodResolver(productoSchema) as Resolver<ProductoFormValues>,
     defaultValues: {
       sku: "",
@@ -56,6 +69,7 @@ export function ProductoForm({
 
   const disponible = watch("disponible");
 
+
   function submit(data: ProductoFormValues) {
     startTransition(async () => {
       await onSubmit(data);
@@ -64,7 +78,7 @@ export function ProductoForm({
 
   return (
     <form onSubmit={handleSubmit(submit)} noValidate className="space-y-2">
-      {/* ── Sección: Producto ── */}
+      {}
       <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide pt-1">
         Producto
       </p>
@@ -89,6 +103,32 @@ export function ProductoForm({
             {...register("nombre")}
           />
           <FieldError errors={[errors.nombre].filter(Boolean)} />
+        </Field>
+
+        <Field data-invalid={!!errors.id_proveedor}>
+          <FieldLabel>Proveedor</FieldLabel>
+          <Controller
+            control={control}
+            name="id_proveedor"
+            render={({ field: f }) => (
+              <Select
+                value={f.value ? String(f.value) : ""}
+                onValueChange={(val) => f.onChange(Number(val))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar proveedor…" />
+                </SelectTrigger>
+                <SelectContent>
+                  {proveedores.map((p) => (
+                    <SelectItem key={p.id_proveedor} value={String(p.id_proveedor)}>
+                      {p.nombre_proveedor}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />  
+          <FieldError errors={[errors.id_proveedor]} />
         </Field>
 
         <div className="grid grid-cols-2 gap-3">
@@ -123,7 +163,7 @@ export function ProductoForm({
         </div>
       </FieldGroup>
 
-      {/* ── Sección: Detalle ── */}
+      {}
       <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide pt-2">
         Detalle
       </p>
