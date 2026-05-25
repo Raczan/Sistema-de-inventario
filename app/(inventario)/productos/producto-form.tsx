@@ -4,7 +4,10 @@
 import { useTransition, useState, useEffect } from "react";
 import { useForm, type Resolver, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { productoSchema, type ProductoFormValues } from "@/lib/schemas/producto";
+import {
+  productoSchema,
+  type ProductoFormValues,
+} from "@/lib/schemas/producto";
 import {
   Field,
   FieldError,
@@ -38,9 +41,12 @@ export function ProductoForm({
   const [isPending, startTransition] = useTransition();
 
   // Cargar proveedores para el select
-  const [proveedores, setProveedores] = useState<{ 
-    id_proveedor: number; 
-    nombre_proveedor: string }[]>([]);
+  const [proveedores, setProveedores] = useState<
+    {
+      id_proveedor: number;
+      nombre_proveedor: string;
+    }[]
+  >([]);
   useEffect(() => {
     fetch("/api/proveedores")
       .then((r) => r.json())
@@ -49,7 +55,12 @@ export function ProductoForm({
   }, []);
 
   const {
-    register, handleSubmit, watch, setValue, control, formState: { errors } 
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    control,
+    formState: { errors },
   } = useForm<ProductoFormValues>({
     resolver: zodResolver(productoSchema) as Resolver<ProductoFormValues>,
     defaultValues: {
@@ -68,7 +79,6 @@ export function ProductoForm({
   });
 
   const disponible = watch("disponible");
-
 
   function submit(data: ProductoFormValues) {
     startTransition(async () => {
@@ -120,14 +130,17 @@ export function ProductoForm({
                 </SelectTrigger>
                 <SelectContent>
                   {proveedores.map((p) => (
-                    <SelectItem key={p.id_proveedor} value={String(p.id_proveedor)}>
+                    <SelectItem
+                      key={p.id_proveedor}
+                      value={String(p.id_proveedor)}
+                    >
                       {p.nombre_proveedor}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             )}
-          />  
+          />
           <FieldError errors={[errors.id_proveedor]} />
         </Field>
 
@@ -202,7 +215,9 @@ export function ProductoForm({
               placeholder="12"
               {...register("unidades_por_empaque", { valueAsNumber: true })}
             />
-            <FieldError errors={[errors.unidades_por_empaque].filter(Boolean)} />
+            <FieldError
+              errors={[errors.unidades_por_empaque].filter(Boolean)}
+            />
           </Field>
         </div>
 

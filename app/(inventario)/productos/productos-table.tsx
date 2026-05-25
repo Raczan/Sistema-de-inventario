@@ -172,7 +172,7 @@ export function ProductosTable() {
     {
       accessorKey: "nombre_proveedor",
       header: "Proveedor",
-      cell: ({getValue}) => getValue<string>() ?? "-",
+      cell: ({ getValue }) => getValue<string>() ?? "-",
     },
     {
       accessorKey: "disponible",
@@ -267,7 +267,10 @@ export function ProductosTable() {
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>

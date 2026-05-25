@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
   const body = await request.json();
@@ -18,18 +18,19 @@ export async function PUT(
     presentacion,
     unidades_por_empaque,
     precio_compra,
+    id_proveedor,
   } = body;
 
   // Actualizar producto
   const [producto] = await sql`
   UPDATE productos
-  SET sku = ${sku}, nombre = ${nombre}, precio_venta = ${precio_venta}, disponible = ${disponible}
+  SET sku = ${sku}, nombre = ${nombre}, precio_venta = ${precio_venta}, disponible = ${disponible}, id_proveedor = ${id_proveedor}
   WHERE id_producto = ${id}
   RETURNING *
 `;
 
-// Actualizar detalle_producto
-await sql`
+  // Actualizar detalle_producto
+  await sql`
   UPDATE detalle_producto
   SET
     descripcion          = ${descripcion ?? null},
@@ -46,7 +47,7 @@ await sql`
 
 export async function DELETE(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
   await sql`DELETE FROM productos WHERE id_producto = ${id}`;
