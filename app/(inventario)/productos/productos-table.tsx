@@ -52,6 +52,7 @@ type Producto = {
   id_producto: number;
   sku: string;
   nombre: string;
+  id_proveedor: number | null;
   nombre_proveedor: string | null;
   precio_venta: number;
   disponible: boolean;
@@ -298,6 +299,7 @@ export function ProductosTable() {
                 ? {
                     sku: selected.sku,
                     nombre: selected.nombre,
+                    id_proveedor: selected.id_proveedor ?? undefined,
                     precio_venta: selected.precio_venta,
                     disponible: selected.disponible,
                     descripcion: selected.descripcion ?? "",
