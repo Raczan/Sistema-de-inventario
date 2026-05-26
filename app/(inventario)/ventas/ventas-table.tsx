@@ -8,7 +8,11 @@ import {
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { PencilIcon, TrashIcon, MagnifyingGlassIcon } from "@phosphor-icons/react";
+import {
+  PencilIcon,
+  TrashIcon,
+  MagnifyingGlassIcon,
+} from "@phosphor-icons/react";
 
 import { type VentaFormValues } from "@/lib/schemas/venta";
 import { VentaForm } from "./venta-form";
@@ -43,8 +47,8 @@ import {
 
 type Venta = {
   id_venta: number;
-  fecha_venta: string;          
-  total: string;                
+  fecha_venta: string;
+  total: string;
   observacion: string | null;
   num_productos: number;
 };
@@ -70,7 +74,6 @@ export function VentasTable() {
     Partial<VentaFormValues> | undefined
   >(undefined);
 
-
   async function fetchVentas() {
     const res = await fetch("/api/ventas");
     const json = await res.json();
@@ -80,7 +83,6 @@ export function VentasTable() {
   useEffect(() => {
     fetchVentas();
   }, []);
-
 
   async function handleAdd(data: VentaFormValues) {
     await fetch("/api/ventas", {
@@ -136,9 +138,7 @@ export function VentasTable() {
       accessorKey: "id_venta",
       header: "# Venta",
       cell: ({ row }) => (
-        <span className="font-mono text-sm">
-          #{row.original.id_venta}
-        </span>
+        <span className="font-mono text-sm">#{row.original.id_venta}</span>
       ),
     },
     {
@@ -239,9 +239,7 @@ export function VentasTable() {
             <DialogHeader>
               <DialogTitle>Nueva venta</DialogTitle>
             </DialogHeader>
-            <div className="overflow-y-auto max-h-[calc(90vh-8rem)]">
-              <VentaForm key={String(addOpen)} onSubmit={handleAdd} />
-            </div>
+            <VentaForm key={String(addOpen)} onSubmit={handleAdd} />
           </DialogContent>
         </Dialog>
       </div>
@@ -294,20 +292,17 @@ export function VentasTable() {
           <DialogHeader>
             <DialogTitle>Editar venta #{selected?.id_venta}</DialogTitle>
           </DialogHeader>
-          <div className="overflow-y-auto max-h-[calc(90vh-8rem)]">
-            {editDefaults && (
-              <VentaForm
-                key={selected?.id_venta}
-                defaultValues={editDefaults}
-                onSubmit={handleEdit}
-                submitLabel="Guardar cambios"
-              />
-            )}
-          </div>
+          {editDefaults && (
+            <VentaForm
+              key={selected?.id_venta}
+              defaultValues={editDefaults}
+              onSubmit={handleEdit}
+              submitLabel="Guardar cambios"
+            />
+          )}
         </DialogContent>
       </Dialog>
 
-      {}
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent size="sm">
           <AlertDialogHeader>
