@@ -238,7 +238,7 @@ export function ProductosTable() {
               Agregar producto
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>Nuevo producto</DialogTitle>
             </DialogHeader>
@@ -291,7 +291,7 @@ export function ProductosTable() {
 
       {/* Dialog: Editar */}
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Editar producto</DialogTitle>
           </DialogHeader>
