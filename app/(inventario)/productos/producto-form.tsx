@@ -2,7 +2,7 @@
 
 //Se agrega el campo de proveedor al formulario de producto, con un select que carga los proveedores desde la API
 import { useTransition, useState, useEffect } from "react";
-import { useForm, type Resolver, Controller } from "react-hook-form";
+import { useForm, useWatch, type Resolver, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   productoSchema,
@@ -57,7 +57,6 @@ export function ProductoForm({
   const {
     register,
     handleSubmit,
-    watch,
     setValue,
     control,
     formState: { errors },
@@ -78,7 +77,7 @@ export function ProductoForm({
     },
   });
 
-  const disponible = watch("disponible");
+  const disponible = useWatch({ control, name: "disponible" });
 
   function submit(data: ProductoFormValues) {
     startTransition(async () => {
