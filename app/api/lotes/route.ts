@@ -17,8 +17,7 @@ export async function GET() {
       public.lotes l
     JOIN
       public.productos p ON l.id_producto = p.id_producto
-    ORDER BY
-      ORDER BY l.fechaEdicion DESC
+    ORDER BY l.fechaEdicion DESC
   `;
   return NextResponse.json(rows);
 }
