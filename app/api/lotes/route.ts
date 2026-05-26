@@ -41,7 +41,8 @@ export async function POST(request: Request) {
         cantidad_inicial,
         cantidad_actual,
         fecha_entrada,
-        fecha_vencimiento
+        fecha_vencimiento,
+        fechaEdicion
       )
     VALUES
       (
@@ -51,6 +52,7 @@ export async function POST(request: Request) {
         ${cantidad_actual},
         ${fecha_entrada},
         ${fecha_vencimiento}
+        , NOW()
       )
     RETURNING
       id_lote,

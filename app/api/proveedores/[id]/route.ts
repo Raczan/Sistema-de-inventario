@@ -14,7 +14,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         email            = ${email},
         direccion        = ${direccion},
         nombre_representante = ${nombre_representante},
-        activo           = ${activo}
+        activo           = ${activo},
+        fechaEdicion     = NOW()
     WHERE id_proveedor = ${id}
     RETURNING *
   `;

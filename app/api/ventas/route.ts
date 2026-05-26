@@ -31,19 +31,21 @@ export async function POST(request: Request) {
   );
 
   const [venta] = await sql`
-    INSERT INTO ventas (fecha_venta, total, observacion)
-    VALUES (${fecha_venta}, ${total}, ${observacion || null})
+    INSERT INTO ventas (fecha_venta, total, observacion, fechaEdicion)
+    VALUES (${fecha_venta}, ${total}, ${observacion || null}, NOW()
+    )
     RETURNING *
   `;
 
   for (const detalle of detalles) {
     await sql`
-      INSERT INTO venta_detalle (id_venta, id_lote, cantidad_vendida, precio_unitario)
+      INSERT INTO venta_detalle (id_venta, id_lote, cantidad_vendida, precio_unitario, fechaEdicion)
       VALUES (
         ${venta.id_venta},
         ${detalle.id_lote},
         ${detalle.cantidad_vendida},
-        ${detalle.precio_unitario}
+        ${detalle.precio_unitario},
+        NOW()
       )
     `;
   }

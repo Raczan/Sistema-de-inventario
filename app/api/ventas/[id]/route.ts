@@ -13,10 +13,10 @@ export async function GET(
   if (!venta) return new NextResponse(null, { status: 404 });
 
   const detalles = await sql`
-    SELECT id_detalle, id_lote, cantidad_vendida, precio_unitario
+    SELECT id_detalle, id_lote, cantidad_vendida, precio_unitario, fechaEdicion
     FROM venta_detalle
     WHERE id_venta = ${id}
-    ORDER BY id_detalle ASC
+    ORDER BY id_detalle DESC
   `;
 
   return NextResponse.json({ ...venta, detalles });
@@ -44,7 +44,8 @@ export async function PUT(
     SET
       fecha_venta  = ${fecha_venta},
       total        = ${total},
-      observacion  = ${observacion || null}
+      observacion  = ${observacion || null},
+      fechaEdicion = NOW()
     WHERE id_venta = ${id}
     RETURNING *
   `;
@@ -53,12 +54,13 @@ export async function PUT(
 
   for (const detalle of detalles) {
     await sql`
-      INSERT INTO venta_detalle (id_venta, id_lote, cantidad_vendida, precio_unitario)
+      INSERT INTO venta_detalle (id_venta, id_lote, cantidad_vendida, precio_unitario, fechaEdicion)
       VALUES (
         ${id},
         ${detalle.id_lote},
         ${detalle.cantidad_vendida},
-        ${detalle.precio_unitario}
+        ${detalle.precio_unitario},
+        NOW()
       )
     `;
   }

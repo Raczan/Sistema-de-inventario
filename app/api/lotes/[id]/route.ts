@@ -25,7 +25,8 @@ export async function PUT(
       cantidad_inicial = ${cantidad_inicial},
       cantidad_actual = ${cantidad_actual},
       fecha_entrada = ${fecha_entrada},
-      fecha_vencimiento = ${fecha_vencimiento}
+      fecha_vencimiento = ${fecha_vencimiento},
+      fechaEdicion = NOW()
     WHERE
       id_lote = ${parseInt(id, 10)}
     RETURNING
@@ -57,16 +58,22 @@ export async function DELETE(
     `;
 
     return new NextResponse(null, { status: 204 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error deleting lote:", error);
 
-    // Si tiene ventas asociadas, mostrar mensaje amigable
-    if (error.code === "23503" && error.constraint_name === "venta_detalle_id_lote_fkey") {
-      return NextResponse.json(
-        { error: "No se puede eliminar este lote porque tiene ventas registradas" },
-        { status: 409 }
-      );
-    }
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      "constraint_name" in error &&
+      (error as { code: string }).code === "23503" &&
+      (error as { constraint_name: string }).constraint_name === "venta_detalle_id_lote_fkey"
+    ) {
+    return NextResponse.json(
+      { error: "Error al eliminar el lote" },
+      { status: 500 }
+    );
+  }
 
     return NextResponse.json(
       { error: "Error al eliminar el lote" },
