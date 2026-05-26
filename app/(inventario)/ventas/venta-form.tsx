@@ -89,7 +89,7 @@ export function VentaForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(submit)} noValidate className="space-y-4">
+    <form onSubmit={handleSubmit(submit)} noValidate className="space-y-4 min-w-0 overflow-hidden">
       {}
       <FieldGroup>
         <div className="grid grid-cols-2 gap-4">
@@ -180,7 +180,7 @@ export function VentaForm({
                   >
                     <SelectTrigger
                       data-invalid={!!errors.detalles?.[index]?.id_lote}
-                      className="w-full"
+                      className="w-full overflow-hidden"
                     >
                       <SelectValue placeholder="Seleccionar lote…" />
                     </SelectTrigger>
