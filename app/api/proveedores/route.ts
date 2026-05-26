@@ -5,7 +5,7 @@ export async function GET() {
   const proveedores = await sql`
     SELECT id_proveedor, nombre_proveedor, nit_proveedor, telefono, email, direccion, nombre_representante, activo
     FROM proveedores
-    ORDER BY proveedores.fechaEdicion DESC
+    ORDER BY proveedores.fechaEdicion ASC
   `;
   return NextResponse.json(proveedores);
 }

@@ -12,7 +12,7 @@ export async function GET() {
     FROM ventas v
     LEFT JOIN venta_detalle d ON d.id_venta = v.id_venta
     GROUP BY v.id_venta
-    ORDER BY v.fechaEdicion DESC 
+    ORDER BY v.fechaEdicion ASC 
   `;
   return NextResponse.json(rows);
 }

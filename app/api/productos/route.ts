@@ -21,7 +21,7 @@ export async function GET() {
     FROM productos p
     LEFT JOIN detalle_producto d ON d.id_producto = p.id_producto
     LEFT JOIN proveedores ON proveedores.id_proveedor = p.id_proveedor
-    ORDER BY p.fechaEdicion DESC
+    ORDER BY p.fechaEdicion ASC
   `;
   return NextResponse.json(rows);
 }

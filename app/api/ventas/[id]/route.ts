@@ -16,7 +16,7 @@ export async function GET(
     SELECT id_detalle, id_lote, cantidad_vendida, precio_unitario, fechaEdicion
     FROM venta_detalle
     WHERE id_venta = ${id}
-    ORDER BY id_detalle DESC
+    ORDER BY id_detalle ASC
   `;
 
   return NextResponse.json({ ...venta, detalles });
