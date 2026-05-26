@@ -16,7 +16,6 @@ export async function GET() {
       d.presentacion,
       d.unidades_por_empaque,
       d.precio_compra,
-      
       p.id_proveedor,
       proveedores.nombre_proveedor
     FROM productos p
@@ -44,8 +43,8 @@ export async function POST(request: Request) {
   } = body;
 
   const [producto] = await sql`
-    INSERT INTO productos (sku, nombre, precio_venta, disponible, id_proveedor)
-      VALUES (${sku}, ${nombre}, ${precio_venta}, ${disponible}, ${id_proveedor})
+    INSERT INTO productos (sku, nombre, precio_venta, disponible, id_proveedor, fechaEdicion)
+      VALUES (${sku}, ${nombre}, ${precio_venta}, ${disponible}, ${id_proveedor}, NOW())
     RETURNING *
   `;
 
@@ -57,7 +56,8 @@ export async function POST(request: Request) {
       tipo_producto,
       presentacion,
       unidades_por_empaque,
-      precio_compra
+      precio_compra,
+      fechaEdicion
     )
     VALUES (
       ${producto.id_producto},
@@ -66,7 +66,8 @@ export async function POST(request: Request) {
       ${tipo_producto},
       ${presentacion},
       ${unidades_por_empaque},
-      ${precio_compra}
+      ${precio_compra},
+      NOW()
     )
     RETURNING *
   `;

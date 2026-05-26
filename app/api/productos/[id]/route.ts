@@ -21,15 +21,13 @@ export async function PUT(
     id_proveedor,
   } = body;
 
-  // Actualizar producto
   const [producto] = await sql`
   UPDATE productos
-  SET sku = ${sku}, nombre = ${nombre}, precio_venta = ${precio_venta}, disponible = ${disponible}, id_proveedor = ${id_proveedor}
+  SET sku = ${sku}, nombre = ${nombre}, precio_venta = ${precio_venta}, disponible = ${disponible}, id_proveedor = ${id_proveedor}, fechaEdicion = NOW()
   WHERE id_producto = ${id}
   RETURNING *
 `;
 
-  // Actualizar detalle_producto
   await sql`
   UPDATE detalle_producto
   SET
