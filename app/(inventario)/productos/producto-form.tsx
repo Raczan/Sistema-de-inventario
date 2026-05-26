@@ -168,7 +168,7 @@ export function ProductoForm({
                 }
               />
               <label htmlFor="disponible" className="text-sm cursor-pointer">
-                {disponible ? "Sí" : "No"}
+                Sí
               </label>
             </div>
           </Field>
