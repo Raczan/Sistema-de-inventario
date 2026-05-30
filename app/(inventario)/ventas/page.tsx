@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,9 +8,9 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { ProductosTable } from "./productos-table";
+import { VentasTable } from "./ventas-table";
 
-export default function ProductosPage() {
+export default function VentasPage() {
   return (
     <>
       <header className="flex h-16 shrink-0 items-center gap-2">
@@ -21,14 +23,15 @@ export default function ProductosPage() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbPage>Productos</BreadcrumbPage>
+                <BreadcrumbPage>Ventas</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </div>
       </header>
+
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-        <ProductosTable/>
+        <VentasTable />
       </div>
     </>
   );
